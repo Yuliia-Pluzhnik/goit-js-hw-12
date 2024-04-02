@@ -54,9 +54,8 @@ refs.form.addEventListener("submit", async event => {
         displayMessage("Empty field!");
         hideLoadBtn();
     }
-    refs.form.reset();
 });
-refs.loadBtn.addEventListener("click", async onLoadMoreClick => {
+refs.loadBtn.addEventListener("click", async handleLoadMoreClick => {
     currentPage += 1;
     try {
         const data = await getImages(query, currentPage);
@@ -77,6 +76,9 @@ refs.loadBtn.addEventListener("click", async onLoadMoreClick => {
         console.log(error);
         displayMessage("An error occurred while fetching data.");
         hideLoadBtn();
+    }
+    finally {
+        refs.form.reset();
     }
 });
 
