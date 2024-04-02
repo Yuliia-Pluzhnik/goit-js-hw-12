@@ -42,6 +42,7 @@ refs.form.addEventListener("submit", async event => {
             hideLoader();
             if (currentPage >= maxPage) {
                 hideLoadBtn();
+                displayMessage("We're sorry, but you've reached the end of search results.")
             } else {
                 showLoadBtn();
             }
@@ -54,20 +55,24 @@ refs.form.addEventListener("submit", async event => {
         displayMessage("Empty field!");
         hideLoadBtn();
     }
+    form.reset();
 });
-refs.loadBtn.addEventListener("click", async handleLoadMoreClick => {
+
+
+refs.loadBtn.addEventListener("click", async handleLoadMore => {
     currentPage += 1;
     try {
         const data = await getImages(query, currentPage);
-        hideLoader();
+        refs.loader.style.display = "none";
         renderImage(data);
         showLoadBtn();
         const item = document.querySelector(".gallery-item");
-        const rect = item.getBoundingClientRect();
-        window.scrollBy({
-            top: rect.height * 2,
+        const rect = item.getBoundingClientRect().height;
+        scrollBy({
+            top: rect,
             behavior: "smooth",
         })
+     
         const maxPage = Math.ceil(data.totalHits / pageLimit);
         if (currentPage >= maxPage) {
             hideLoadBtn();
@@ -76,9 +81,6 @@ refs.loadBtn.addEventListener("click", async handleLoadMoreClick => {
         console.log(error);
         displayMessage("An error occurred while fetching data.");
         hideLoadBtn();
-    }
-    finally {
-        refs.form.reset();
     }
 });
 
